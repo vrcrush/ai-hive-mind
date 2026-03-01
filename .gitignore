@@ -1,0 +1,38 @@
+# Environment variables - NEVER COMMIT THESE
+backend/.env
+backend/.env.local
+backend/.env.production
+.env
+.env.local
+
+# Dependencies - NEVER COMMIT THESE
+backend/node_modules/
+frontend/node_modules/
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# Temporary files
+tmp/
+temp/

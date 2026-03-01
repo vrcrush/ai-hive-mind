@@ -1,0 +1,16 @@
+# render.yaml — Render deployment configuration
+services:
+  - type: web
+    name: ai-hive-mind-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false          # Set manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false          # Set to your Vercel frontend URL
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
+    plan: free               # Upgrade to "starter" to avoid cold starts
