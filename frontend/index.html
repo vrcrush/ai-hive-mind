@@ -1855,7 +1855,7 @@ const AGENT_NAMES = {
 };
 
 // ── State ──────────────────────────────────────────────────
-let backendUrl = 'https://ai-hive-mind-backend.onrender.com';
+let backendUrl = 'https://ai-hive-mind-backend.onrender.com'; // Production backend URL
 let currentSessionId = null;
 let rounds = 1; // Locked to single round
 let isRunning = false;
@@ -2425,24 +2425,33 @@ async function activateHive() {
 
   resetHiveDisplay();
 
-  // Show loading overlay
+  // Show loading overlay only after 2 seconds (skip for fast local requests)
   const loadingOverlay = document.getElementById('backend-loading');
   const loadingMessage = document.getElementById('loading-message');
-  loadingOverlay.classList.add('active');
-  loadingMessage.textContent = 'Connecting to backend server...';
+  
+  let loadingTimeout = setTimeout(() => {
+    loadingOverlay.classList.add('active');
+    loadingMessage.textContent = 'Connecting to backend server...';
+  }, 2000);
 
-  // Update message after 5 seconds if still loading
+  // Update message after 7 seconds if still loading (5 seconds after showing)
   const messageTimeout1 = setTimeout(() => {
-    loadingMessage.textContent = 'Backend is waking up (this is normal on free tier)...';
-  }, 5000);
+    if (loadingOverlay.classList.contains('active')) {
+      loadingMessage.textContent = 'Backend is waking up (this is normal on free tier)...';
+    }
+  }, 7000);
 
   const messageTimeout2 = setTimeout(() => {
-    loadingMessage.textContent = 'Almost there... setting up the hive mind...';
-  }, 15000);
+    if (loadingOverlay.classList.contains('active')) {
+      loadingMessage.textContent = 'Almost there... setting up the hive mind...';
+    }
+  }, 17000);
 
   const messageTimeout3 = setTimeout(() => {
-    loadingMessage.textContent = 'Just a few more seconds... initializing agents...';
-  }, 30000);
+    if (loadingOverlay.classList.contains('active')) {
+      loadingMessage.textContent = 'Just a few more seconds... initializing agents...';
+    }
+  }, 32000);
 
   try {
     const sessRes = await fetch(`${backendUrl}/api/session`, {
@@ -2450,7 +2459,8 @@ async function activateHive() {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    // Clear timeouts
+    // Clear all timeouts - we're connected
+    clearTimeout(loadingTimeout);
     clearTimeout(messageTimeout1);
     clearTimeout(messageTimeout2);
     clearTimeout(messageTimeout3);
@@ -2809,6 +2819,12 @@ function resetHiveDisplay() {
 window.addEventListener('DOMContentLoaded', () => {
   initAtlas();
   initCanvas();
+  
+  // Auto-hide config modal if backend URL is already set
+  if (backendUrl && backendUrl !== '') {
+    document.getElementById('config-modal').style.display = 'none';
+    setOnline(true); // Assume online with preset backend
+  }
   
   document.getElementById('problem-input').addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') activateHive();
