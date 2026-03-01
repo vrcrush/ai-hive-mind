@@ -5,14 +5,53 @@ import express from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { runHive, getSessionState } from './hiveOrchestrator.js';
 
-dotenv.config();
+// Load environment variables
+// Try .env.local first (local dev), then fall back to .env (production)
+dotenv.config({ path: '.env.local' });
+dotenv.config(); // This won't override existing variables
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-// ── Middleware ─────────────────────────────────────────────────────────────────
+// ── Security Middleware ────────────────────────────────────────────────────────
+
+// Helmet - Security headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for SSE streaming
+  crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiting - Prevent abuse
+const createLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: IS_PRODUCTION ? 10 : 100, // 10 requests per 15min in production, 100 in dev
+  message: { 
+    error: 'Too many requests. Please try again in 15 minutes.',
+    retryAfter: 900 
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const streamLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: IS_PRODUCTION ? 5 : 50, // 5 streams per minute in production
+  message: { 
+    error: 'Too many active sessions. Please wait before starting a new one.',
+    retryAfter: 60 
+  }
+});
+
+// Apply rate limiters
+app.use('/api/session', createLimiter);
+app.use('/api/hive', streamLimiter);
+
+// ── CORS ───────────────────────────────────────────────────────────────────────
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
@@ -20,10 +59,74 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Accept']
 }));
 
-app.use(express.json({ limit: '10kb' }));
+// ── Body Parser with Size Limit ────────────────────────────────────────────────
+
+app.use(express.json({ 
+  limit: '10kb' // Prevent large payload attacks
+}));
+
+// ── Input Validation Middleware ────────────────────────────────────────────────
+
+function validateProblemInput(req, res, next) {
+  const { problem } = req.body;
+  
+  if (!problem || typeof problem !== 'string') {
+    return res.status(400).json({ error: 'Problem description is required' });
+  }
+  
+  if (problem.trim().length < 3) {
+    return res.status(400).json({ error: 'Problem must be at least 3 characters' });
+  }
+  
+  if (problem.length > 5000) {
+    return res.status(400).json({ error: 'Problem description too long (max 5000 characters)' });
+  }
+  
+  // Basic XSS prevention
+  const dangerousPatterns = /<script|javascript:|onerror=|onclick=/i;
+  if (dangerousPatterns.test(problem)) {
+    return res.status(400).json({ error: 'Invalid input detected' });
+  }
+  
+  next();
+}
+
+function validateRounds(req, res, next) {
+  const { rounds } = req.body;
+  
+  if (rounds && (typeof rounds !== 'number' || rounds < 1 || rounds > 1)) {
+    return res.status(400).json({ error: 'Rounds must be 1 (locked to single round)' });
+  }
+  
+  next();
+}
 
 // Active SSE connections: sessionId -> res
 const activeConnections = new Map();
+
+// Connection tracking for abuse prevention
+const connectionTracker = new Map(); // IP -> { count, lastReset }
+
+function trackConnection(ip) {
+  const now = Date.now();
+  const tracker = connectionTracker.get(ip) || { count: 0, lastReset: now };
+  
+  // Reset counter every hour
+  if (now - tracker.lastReset > 3600000) {
+    tracker.count = 0;
+    tracker.lastReset = now;
+  }
+  
+  tracker.count++;
+  connectionTracker.set(ip, tracker);
+  
+  // Max 20 sessions per IP per hour in production
+  if (IS_PRODUCTION && tracker.count > 20) {
+    return false;
+  }
+  
+  return true;
+}
 
 // ── SSE Helper ─────────────────────────────────────────────────────────────────
 
@@ -57,20 +160,59 @@ app.post('/api/session', (req, res) => {
 });
 
 // SSE stream: client connects here, then we start the hive
-// GET /api/hive/:sessionId?problem=...&rounds=2
+// GET /api/hive/:sessionId?problem=...&rounds=1
 app.get('/api/hive/:sessionId', async (req, res) => {
   const { sessionId } = req.params;
-  const { problem, rounds = 2 } = req.query;
+  const { problem, rounds = 1 } = req.query;
+  const clientIp = req.ip || req.connection.remoteAddress;
 
-  if (!problem || problem.trim().length === 0) {
+  // Validate session ID format
+  if (!sessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId)) {
+    return res.status(400).json({ error: 'Invalid session ID' });
+  }
+
+  // Check connection limits
+  if (!trackConnection(clientIp)) {
+    return res.status(429).json({ 
+      error: 'Too many sessions from your IP. Please try again in 1 hour.' 
+    });
+  }
+
+  // Validate problem
+  if (!problem || typeof problem !== 'string' || problem.trim().length === 0) {
     return res.status(400).json({ error: 'Problem is required' });
   }
 
-  if (problem.length > 1000) {
-    return res.status(400).json({ error: 'Problem too long (max 2000 chars)' });
+  if (problem.trim().length < 3) {
+    return res.status(400).json({ error: 'Problem must be at least 3 characters' });
   }
 
-  const roundCount = Math.min(Math.max(parseInt(rounds) || 2, 1), 3);
+  if (problem.length > 5000) {
+    return res.status(400).json({ error: 'Problem too long (max 5000 characters)' });
+  }
+
+  // XSS prevention
+  const dangerousPatterns = /<script|javascript:|onerror=|onclick=/i;
+  if (dangerousPatterns.test(problem)) {
+    return res.status(400).json({ error: 'Invalid input detected' });
+  }
+
+  // Validate rounds (locked to 1)
+  const numRounds = parseInt(rounds, 10);
+  if (isNaN(numRounds) || numRounds !== 1) {
+    return res.status(400).json({ error: 'Rounds must be 1 (locked to single round)' });
+  }
+
+  // Check for existing active connection (prevent duplicate sessions)
+  if (activeConnections.has(sessionId)) {
+    return res.status(409).json({ error: 'Session already active' });
+  }
+
+  // Always use 1 round (locked)
+  const roundCount = 1;
+
+  // Security logging
+  console.log(`[HIVE START] Session: ${sessionId}, IP: ${clientIp}, Problem length: ${problem.length}, Rounds: ${roundCount}`);
 
   // Set up SSE headers
   res.setHeader('Content-Type', 'text/event-stream');
@@ -132,6 +274,7 @@ app.listen(PORT, () => {
   ║      AI HIVE MIND — BACKEND          ║
   ║      Port: ${PORT}                       ║
   ║      Status: ONLINE                  ║
+  ║      Mode: ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}     ║
   ╚══════════════════════════════════════╝
   `);
 });
