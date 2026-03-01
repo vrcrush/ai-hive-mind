@@ -1589,7 +1589,7 @@
       Connecting to backend server...
     </div>
     <div class="loading-tip">
-      ⏱️ First request may take 30-60 seconds (free tier cold start)
+      ⏱️ First request may take 30-60 seconds
     </div>
   </div>
 </div>
@@ -2437,7 +2437,7 @@ async function activateHive() {
   // Update message after 7 seconds if still loading (5 seconds after showing)
   const messageTimeout1 = setTimeout(() => {
     if (loadingOverlay.classList.contains('active')) {
-      loadingMessage.textContent = 'Backend is waking up (this is normal on free tier)...';
+      loadingMessage.textContent = 'Backend is waking up...';
     }
   }, 7000);
 
