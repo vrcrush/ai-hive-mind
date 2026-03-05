@@ -40,7 +40,7 @@ const createLimiter = rateLimit({
 
 const streamLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: IS_PRODUCTION ? 5 : 50, // 5 streams per minute in production
+  max: IS_PRODUCTION ? 2 : 50, // 2 streams per minute in production
   message: { 
     error: 'Too many active sessions. Please wait before starting a new one.',
     retryAfter: 60 
@@ -74,8 +74,8 @@ function validateProblemInput(req, res, next) {
     return res.status(400).json({ error: 'Problem description is required' });
   }
   
-  if (problem.trim().length < 3) {
-    return res.status(400).json({ error: 'Problem must be at least 3 characters' });
+  if (problem.trim().length < 10) {
+    return res.status(400).json({ error: 'Problem must be at least 10 characters' });
   }
   
   if (problem.length > 5000) {
@@ -120,8 +120,8 @@ function trackConnection(ip) {
   tracker.count++;
   connectionTracker.set(ip, tracker);
   
-  // Max 20 sessions per IP per hour in production
-  if (IS_PRODUCTION && tracker.count > 20) {
+  // Max 15 sessions per IP per hour in production
+  if (IS_PRODUCTION && tracker.count > 15) {
     return false;
   }
   
@@ -183,8 +183,8 @@ app.get('/api/hive/:sessionId', async (req, res) => {
     return res.status(400).json({ error: 'Problem is required' });
   }
 
-  if (problem.trim().length < 3) {
-    return res.status(400).json({ error: 'Problem must be at least 3 characters' });
+  if (problem.trim().length < 10) {
+    return res.status(400).json({ error: 'Problem must be at least 10 characters' });
   }
 
   if (problem.length > 5000) {
