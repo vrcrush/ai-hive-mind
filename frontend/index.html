@@ -2441,6 +2441,49 @@ async function activateHive() {
     return;
   }
 
+  // Gibberish detection - ensure quality input
+  
+  // Check: Too many numbers (>70%)
+  const numberRatio = (problem.match(/\d/g) || []).length / problem.length;
+  if (numberRatio > 0.7) {
+    alert('⚠️ Please enter a meaningful question, not just numbers.');
+    return;
+  }
+  
+  // Check: Repeated characters (6+ in a row)
+  if (/(.)\1{5,}/.test(problem)) {
+    alert('⚠️ Please enter a meaningful question without excessive repetition.');
+    return;
+  }
+  
+  // Check: Must have at least one vowel
+  if (!/[aeiouáéíóúàèìòùäëïöüâêîôûAEIOUÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÂÊÎÔÛ]/i.test(problem)) {
+    alert('⚠️ Please enter a valid question with proper words.');
+    return;
+  }
+  
+  // Check: Must have at least one space (multiple words)
+  if (!problem.includes(' ')) {
+    alert('⚠️ Please enter a complete question, not just one word.');
+    return;
+  }
+  
+  // Check: Keyboard smashing
+  const keyboardPatterns = [
+    /qwertyuiop/i,
+    /asdfghjkl/i,
+    /zxcvbnm/i,
+    /1234567890/,
+    /0987654321/,
+    /abcdefgh/i
+  ];
+  for (const pattern of keyboardPatterns) {
+    if (pattern.test(problem)) {
+      alert('⚠️ Please enter a meaningful question.');
+      return;
+    }
+  }
+
   isRunning = true;
   const btn = document.getElementById('activate-btn');
   btn.disabled = true;

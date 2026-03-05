@@ -88,6 +88,47 @@ function validateProblemInput(req, res, next) {
     return res.status(400).json({ error: 'Invalid input detected' });
   }
   
+  // Gibberish detection - prevent low-quality input
+  const trimmed = problem.trim();
+  
+  // Check 1: All numbers (allows some numbers mixed with text)
+  const numberRatio = (trimmed.match(/\d/g) || []).length / trimmed.length;
+  if (numberRatio > 0.7) {
+    return res.status(400).json({ error: 'Please enter a meaningful question, not just numbers' });
+  }
+  
+  // Check 2: Repeated characters (e.g., "aaaaaaa", "1111111")
+  const repeatedPattern = /(.)\1{5,}/;
+  if (repeatedPattern.test(trimmed)) {
+    return res.status(400).json({ error: 'Please enter a meaningful question without excessive repetition' });
+  }
+  
+  // Check 3: Must contain at least one vowel (works for most languages)
+  const hasVowel = /[aeiouáéíóúàèìòùäëïöüâêîôûAEIOUÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÂÊÎÔÛ]/i.test(trimmed);
+  if (!hasVowel) {
+    return res.status(400).json({ error: 'Please enter a valid question with proper words' });
+  }
+  
+  // Check 4: Must contain at least one space (ensures multi-word input)
+  if (!trimmed.includes(' ')) {
+    return res.status(400).json({ error: 'Please enter a complete question, not just one word' });
+  }
+  
+  // Check 5: Keyboard smashing detection (e.g., "asdfghjkl", "qwertyuiop")
+  const keyboardPatterns = [
+    /qwertyuiop/i,
+    /asdfghjkl/i,
+    /zxcvbnm/i,
+    /1234567890/,
+    /0987654321/,
+    /abcdefgh/i
+  ];
+  for (const pattern of keyboardPatterns) {
+    if (pattern.test(trimmed)) {
+      return res.status(400).json({ error: 'Please enter a meaningful question' });
+    }
+  }
+  
   next();
 }
 
@@ -195,6 +236,47 @@ app.get('/api/hive/:sessionId', async (req, res) => {
   const dangerousPatterns = /<script|javascript:|onerror=|onclick=/i;
   if (dangerousPatterns.test(problem)) {
     return res.status(400).json({ error: 'Invalid input detected' });
+  }
+
+  // Gibberish detection - prevent low-quality input
+  const trimmedProblem = problem.trim();
+  
+  // Check: All numbers (allows some numbers mixed with text)
+  const numberRatio = (trimmedProblem.match(/\d/g) || []).length / trimmedProblem.length;
+  if (numberRatio > 0.7) {
+    return res.status(400).json({ error: 'Please enter a meaningful question, not just numbers' });
+  }
+  
+  // Check: Repeated characters (e.g., "aaaaaaa", "1111111")
+  const repeatedPattern = /(.)\1{5,}/;
+  if (repeatedPattern.test(trimmedProblem)) {
+    return res.status(400).json({ error: 'Please enter a meaningful question without excessive repetition' });
+  }
+  
+  // Check: Must contain at least one vowel (works for most languages)
+  const hasVowel = /[aeiouáéíóúàèìòùäëïöüâêîôûAEIOUÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÂÊÎÔÛ]/i.test(trimmedProblem);
+  if (!hasVowel) {
+    return res.status(400).json({ error: 'Please enter a valid question with proper words' });
+  }
+  
+  // Check: Must contain at least one space (ensures multi-word input)
+  if (!trimmedProblem.includes(' ')) {
+    return res.status(400).json({ error: 'Please enter a complete question, not just one word' });
+  }
+  
+  // Check: Keyboard smashing detection
+  const keyboardPatterns = [
+    /qwertyuiop/i,
+    /asdfghjkl/i,
+    /zxcvbnm/i,
+    /1234567890/,
+    /0987654321/,
+    /abcdefgh/i
+  ];
+  for (const pattern of keyboardPatterns) {
+    if (pattern.test(trimmedProblem)) {
+      return res.status(400).json({ error: 'Please enter a meaningful question' });
+    }
   }
 
   // Validate rounds (locked to 1)
