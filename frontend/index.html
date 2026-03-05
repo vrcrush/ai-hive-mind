@@ -96,6 +96,21 @@
 
     .logo span { color: #fff; }
 
+    /* Logo link styling */
+    .logo-link {
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .logo-link:hover {
+      opacity: 0.8;
+    }
+
+    .logo-link:hover .logo {
+      text-shadow: 0 0 25px rgba(0,255,100,1), 0 0 50px rgba(0,255,100,0.6);
+    }
+
     .status-bar {
       display: flex;
       align-items: center;
@@ -909,6 +924,43 @@
       color: #ff7777;
     }
 
+    /* ── FOOTER ── */
+    .app-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8));
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(0, 255, 102, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.05em;
+      z-index: 5;
+    }
+
+    .app-footer a {
+      color: #00ff66;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .app-footer a:hover {
+      color: #00ff88;
+      text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+    }
+
+    .footer-separator {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
     /* ── RESTART BUTTON ── */
     .restart-button {
       position: fixed;
@@ -1072,6 +1124,28 @@
 
     .intro-button:active {
       transform: scale(0.98);
+    }
+
+    .intro-credit {
+      margin-top: 30px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      opacity: 0.6;
+      animation: fadeIn 1s ease 0.8s both;
+    }
+
+    .intro-credit a {
+      color: #00ff66;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .intro-credit a:hover {
+      color: #00ff88;
+      text-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
+      opacity: 1;
     }
 
     /* ── BACKEND LOADING OVERLAY ── */
@@ -1573,6 +1647,10 @@
     </div>
     
     <button class="intro-button" onclick="closeIntro()">Enter the Hive</button>
+    
+    <div class="intro-credit">
+      <a href="https://www.00ia.com" target="_blank" rel="noopener noreferrer">by 00ia.com</a>
+    </div>
   </div>
 </div>
 
@@ -1613,7 +1691,9 @@
 <div id="app">
   <!-- Header -->
   <header>
-    <div class="logo">AI <span>HIVE</span> MIND</div>
+    <a href="https://www.00ia.com" target="_blank" rel="noopener noreferrer" class="logo-link">
+      <div class="logo">AI <span>HIVE</span> MIND</div>
+    </a>
     <div class="status-bar">
       <div class="status-indicator">
         <div class="dot" id="conn-dot"></div>
@@ -1829,6 +1909,14 @@
   <button class="restart-button" id="restart-button" onclick="restartHive()">
     ↻ ASK NEW QUESTION
   </button>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <span>Powered by</span>
+    <a href="https://www.00ia.com" target="_blank" rel="noopener noreferrer">00ia.com</a>
+    <span class="footer-separator">|</span>
+    <span>AI Hive Mind © 2025</span>
+  </footer>
 </div>
 
 <script>
