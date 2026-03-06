@@ -1782,8 +1782,9 @@
       }
 
       .synthesis-content {
-        max-width: 92% !important; /* Wider content */
-        padding: 15px 20px !important;
+        max-width: 96% !important; /* Even wider on mobile */
+        width: 96%;
+        padding: 15px 8px !important; /* Less side padding for more text space */
         font-size: 13px !important;
         line-height: 1.7 !important;
         max-height: 45vh !important; /* Reduced to make room for bubbles */
@@ -3323,6 +3324,12 @@ function showFinalPresentation() {
   // Show presentation with fade-in
   presentation.classList.add('active');
   
+  // Hide input box and hologram on synthesis screen
+  const inputZone = document.querySelector('.input-zone');
+  const hologramZone = document.getElementById('hologram-zone');
+  if (inputZone) inputZone.style.display = 'none';
+  if (hologramZone) hologramZone.style.display = 'none';
+  
   // Show restart button after a delay
   setTimeout(() => {
     document.getElementById('restart-button').classList.add('visible');
@@ -3389,6 +3396,12 @@ function restartHive() {
   btn.disabled = false;
   btn.classList.remove('running');
   btn.textContent = 'ACTIVATE HIVE';
+  
+  // Show input box and hologram again
+  const inputZone = document.querySelector('.input-zone');
+  const hologramZone = document.getElementById('hologram-zone');
+  if (inputZone) inputZone.style.display = 'block';
+  if (hologramZone) hologramZone.style.display = 'flex';
   
   // Clear input
   document.getElementById('problem-input').value = '';
