@@ -740,8 +740,8 @@
     /* Share Button */
     .share-container {
       text-align: center;
-      margin: 25px auto 30px auto;
-      animation: fadeIn 1s ease 1.5s both;
+      margin: 20px auto 25px auto;
+      animation: fadeIn 1s ease 1.2s both;
     }
 
     .share-button {
@@ -2002,8 +2002,7 @@
 
       /* Share Button Mobile */
       .share-container {
-        margin: 20px auto;
-        order: 2.5;
+        margin: 15px auto 20px auto;
       }
 
       .share-button {
@@ -2609,17 +2608,18 @@
       <div class="synthesis-header">
         <div class="synthesis-title">HIVE MIND SYNTHESIS</div>
         <div class="synthesis-label">THE SYNTHESIZER</div>
+        
+        <!-- Share Button - Moved here for visibility -->
+        <div class="share-container">
+          <button class="share-button" id="share-button" onclick="shareSynthesis()">
+            <span class="share-icon">📤</span>
+            <span class="share-text">Share Results</span>
+          </button>
+        </div>
       </div>
+      
       <div class="synthesis-content" id="synthesis-text">
         <!-- Synthesis text populated by JS -->
-      </div>
-
-      <!-- Share Button -->
-      <div class="share-container">
-        <button class="share-button" id="share-button" onclick="shareSynthesis()">
-          <span class="share-icon">📤</span>
-          <span class="share-text">Share Results</span>
-        </button>
       </div>
     </div>
 
