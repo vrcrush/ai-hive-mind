@@ -1604,6 +1604,436 @@
       text-align: center;
       font-family: 'IBM Plex Mono', monospace;
     }
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* ── MOBILE RESPONSIVE (PHONES & TABLETS) ────────────────────────────────── */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    @media (max-width: 768px) {
+      
+      /* ── GLOBAL MOBILE FIXES ── */
+      body {
+        overflow-x: hidden;
+      }
+
+      * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      /* ── HEADER ── */
+      header {
+        padding: 12px 15px;
+        height: 50px;
+      }
+
+      .logo {
+        font-size: 16px;
+        letter-spacing: 0.15em;
+      }
+
+      .status-bar {
+        gap: 12px;
+        font-size: 9px;
+      }
+
+      #session-id-display {
+        display: none; /* Hide on very small screens */
+      }
+
+      /* ── INPUT SECTION ── */
+      .input-section {
+        top: 60px;
+        left: 10px;
+        width: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+      }
+
+      #problem-input {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 12px;
+        min-height: 60px;
+        max-height: 100px;
+      }
+
+      #activate-btn {
+        font-size: 11px;
+        padding: 8px 16px;
+        letter-spacing: 0.1em;
+      }
+
+      /* ── MAIN CANVAS AREA ── */
+      .canvas-zone {
+        padding: 20px 10px;
+      }
+
+      /* ── ATLAS ORB ── */
+      #atlas {
+        width: 100px !important;
+        height: 100px !important;
+      }
+
+      /* ── AGENT NODES ── */
+      .agent-node {
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 9px !important;
+      }
+
+      .node-ring svg {
+        width: 55px !important;
+        height: 55px !important;
+      }
+
+      .hex-cage svg {
+        width: 45px !important;
+        height: 45px !important;
+      }
+
+      .node-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 16px !important;
+      }
+
+      .node-label {
+        font-size: 8px !important;
+        letter-spacing: 0.1em !important;
+      }
+
+      /* ── AGENT TOOLTIPS ── */
+      .agent-tooltip {
+        display: none !important; /* Hide tooltips on mobile (harder to hover) */
+      }
+
+      /* ── HOLOGRAM ── */
+      .hologram {
+        width: 90%;
+        max-width: 300px;
+        font-size: 11px;
+        padding: 8px 12px;
+        line-height: 1.5;
+      }
+
+      .hologram-text {
+        font-size: 11px;
+      }
+
+      /* ── UMBILICAL CORDS ── */
+      .umbilical {
+        display: none; /* Hide decorative cords on mobile for clarity */
+      }
+
+      /* ── LIQUID POOL ── */
+      .liquid-pool {
+        height: 140px;
+        padding: 10px;
+      }
+
+      .pool-entry {
+        font-size: 11px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+      }
+
+      .pool-agent {
+        font-size: 9px;
+        padding: 3px 8px;
+      }
+
+      /* ── SACRED GEOMETRY (HIDE ON MOBILE) ── */
+      #sacred-geometry {
+        opacity: 0.1; /* Reduce instead of hide completely */
+      }
+
+      /* ── SYNTHESIS SCREEN ── */
+      .synthesis-overlay {
+        padding: 15px;
+      }
+
+      .synthesis-header {
+        margin-bottom: 20px;
+      }
+
+      .synthesis-agent-displays {
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .synthesis-agent-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+
+      .synthesis-title {
+        font-size: 22px !important;
+        letter-spacing: 0.15em;
+        margin: 15px 0;
+      }
+
+      .synthesis-content {
+        max-width: 100% !important;
+        padding: 15px !important;
+        font-size: 13px !important;
+        line-height: 1.7 !important;
+        max-height: 50vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .synthesis-content h3 {
+        font-size: 14px !important;
+        margin-top: 15px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .synthesis-content strong {
+        font-size: 14px !important;
+      }
+
+      /* ── AGENT BUBBLES (STACK 2x2) ── */
+      .agent-bubbles {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        justify-items: center !important;
+        margin: 20px auto !important;
+        max-width: 280px !important;
+      }
+
+      .agent-bubble {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 10px !important;
+      }
+
+      .agent-bubble .node-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 18px !important;
+      }
+
+      .agent-bubble .node-label {
+        font-size: 9px !important;
+        letter-spacing: 0.05em !important;
+      }
+
+      /* ── DETAIL PANEL ── */
+      .detail-panel {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        height: 80vh !important;
+        max-height: 80vh !important;
+        padding: 15px !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+      }
+
+      .detail-panel-header {
+        font-size: 16px !important;
+        margin-bottom: 15px !important;
+        padding-right: 35px;
+      }
+
+      .detail-close {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 20px !important;
+        top: 12px !important;
+        right: 12px !important;
+      }
+
+      .detail-panel-content {
+        font-size: 13px !important;
+        line-height: 1.7 !important;
+        padding: 10px !important;
+        max-height: calc(80vh - 80px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* ── RESTART BUTTON ── */
+      .restart-button {
+        font-size: 11px !important;
+        padding: 10px 20px !important;
+        letter-spacing: 0.15em !important;
+        bottom: 60px !important; /* Above footer */
+      }
+
+      /* ── INTRO SCREEN ── */
+      .intro-content {
+        padding: 30px 20px;
+        max-width: 100%;
+      }
+
+      .intro-title {
+        font-size: 32px;
+        letter-spacing: 0.15em;
+      }
+
+      .intro-subtitle {
+        font-size: 13px;
+        letter-spacing: 0.2em;
+      }
+
+      .intro-description {
+        font-size: 13px;
+        line-height: 1.6;
+        padding: 0 10px;
+      }
+
+      .intro-agents {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 0 20px;
+      }
+
+      .intro-agent {
+        padding: 12px;
+      }
+
+      .intro-agent-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .intro-agent-name {
+        font-size: 12px;
+        letter-spacing: 0.15em;
+      }
+
+      .intro-agent-role {
+        font-size: 10px;
+      }
+
+      .intro-button {
+        font-size: 13px;
+        padding: 12px 30px;
+        letter-spacing: 0.2em;
+      }
+
+      .intro-credit {
+        font-size: 12px;
+        margin-top: 20px;
+      }
+
+      /* ── BACKEND LOADING OVERLAY ── */
+      .loading-content {
+        padding: 30px 20px;
+        max-width: 90%;
+      }
+
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+      }
+
+      .loading-title {
+        font-size: 18px;
+        letter-spacing: 0.15em;
+      }
+
+      .loading-message {
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .loading-tip {
+        font-size: 11px;
+      }
+
+      /* ── FOOTER ── */
+      .app-footer {
+        height: 35px;
+        font-size: 10px;
+        gap: 8px;
+        padding: 0 10px;
+      }
+
+      .footer-separator {
+        display: none; /* Hide separator on very small screens */
+      }
+
+      /* ── CONFIG MODAL ── */
+      .modal-box {
+        width: 90%;
+        max-width: 90%;
+        padding: 25px 20px;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        letter-spacing: 0.15em;
+      }
+
+      .modal-sub {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .modal-input {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .modal-btn {
+        font-size: 12px;
+        padding: 10px 24px;
+      }
+
+      .modal-hint {
+        font-size: 10px;
+      }
+    }
+
+    /* ── EXTRA SMALL PHONES (< 375px) ── */
+    @media (max-width: 375px) {
+      .logo {
+        font-size: 14px;
+      }
+
+      .intro-title {
+        font-size: 28px;
+      }
+
+      .synthesis-title {
+        font-size: 20px !important;
+      }
+
+      .agent-bubbles {
+        max-width: 240px !important;
+      }
+
+      .agent-bubble {
+        width: 60px !important;
+        height: 60px !important;
+      }
+
+      #problem-input {
+        font-size: 12px;
+      }
+    }
+
+    /* ── TABLETS (768px - 1024px) ── */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .synthesis-content {
+        max-width: 85% !important;
+        font-size: 15px !important;
+      }
+
+      .agent-bubbles {
+        gap: 20px !important;
+      }
+
+      .agent-bubble {
+        width: 90px !important;
+        height: 90px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2357,8 +2787,12 @@ function positionNodes() {
 
   const cx = w * 0.5;  // Center horizontally
   const cy = h * 0.5;  // Center vertically
-  const rx = Math.min(w, h) * 0.25;
-  const ry = Math.min(w, h) * 0.23;
+  
+  // Adjust radius for mobile - smaller circle
+  const isMobile = window.innerWidth <= 768;
+  const baseRadius = isMobile ? 0.30 : 0.25; // Larger percentage on mobile for better spacing
+  const rx = Math.min(w, h) * baseRadius;
+  const ry = Math.min(w, h) * (isMobile ? 0.28 : 0.23);
 
   AGENT_ORDER.forEach((id, i) => {
     const angle = (i / AGENT_ORDER.length) * Math.PI * 2 - Math.PI / 2;
