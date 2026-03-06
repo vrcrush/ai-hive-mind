@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI HIVE MIND</title>
+  <title>AI HIVE MIND — ULTIMATE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -323,7 +323,7 @@
 
     .input-label {
       font-family: 'Chakra Petch', sans-serif;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.25em;
       color: rgba(120, 80, 220, 0.9);
@@ -337,7 +337,7 @@
       border-radius: 4px;
       color: #e8f4f8;
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.5;
       padding: 10px 12px;
       resize: vertical;
@@ -2680,7 +2680,7 @@
     <span>Powered by</span>
     <a href="https://www.00ia.com" target="_blank" rel="noopener noreferrer">00ia.com</a>
     <span class="footer-separator">|</span>
-    <span>AI Hive Mind © 2026</span>
+    <span>AI Hive Mind © 2025</span>
   </footer>
 </div>
 
@@ -3758,7 +3758,7 @@ function shareSynthesis() {
 
 function formatShareText(question, synthesis) {
   // Truncate synthesis if too long
-  const maxLength = 800;
+  const maxLength = 400;
   let truncatedSynthesis = synthesis;
   
   if (synthesis.length > maxLength) {
@@ -3801,10 +3801,24 @@ function copyToClipboard() {
 }
 
 function shareLinkedIn() {
-  const url = 'https://00ia.com';
-  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-  window.open(linkedInUrl, '_blank', 'width=600,height=600');
-  closeShareModal();
+  // Copy text to clipboard first
+  navigator.clipboard.writeText(currentShareText).then(() => {
+    // Show notification
+    showSuccess('✓ Copied! Paste it in LinkedIn');
+    
+    // Open LinkedIn feed after short delay
+    setTimeout(() => {
+      window.open('https://www.linkedin.com/feed/', '_blank', 'width=800,height=600');
+    }, 500);
+    
+    closeShareModal();
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    // Fallback if copy fails
+    alert('Please manually copy the text and paste in LinkedIn');
+    window.open('https://www.linkedin.com/feed/', '_blank', 'width=800,height=600');
+    closeShareModal();
+  });
 }
 
 function shareTwitter() {
