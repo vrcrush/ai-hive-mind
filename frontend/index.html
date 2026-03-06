@@ -449,6 +449,7 @@
       height: 180px;
       pointer-events: none;
       z-index: 10;
+      display: none !important; /* HIDE - text only in liquid pool at bottom */
     }
 
     .hologram-text {
@@ -1712,16 +1713,17 @@
       }
 
       /* ── HOLOGRAM ── */
+      /* ── HOLOGRAM (HIDE ON MOBILE) ── */
+      .hologram-zone {
+        display: none !important; /* Hide hologram on mobile - text only in pool */
+      }
+
       .hologram {
-        width: 90%;
-        max-width: 300px;
-        font-size: 11px;
-        padding: 8px 12px;
-        line-height: 1.5;
+        display: none !important;
       }
 
       .hologram-text {
-        font-size: 11px;
+        display: none !important;
       }
 
       /* ── UMBILICAL CORDS ── */
