@@ -898,6 +898,10 @@
       font-size: 15px;
       line-height: 1.9;
       color: rgba(255, 255, 255, 0.9);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
     }
 
     .panel-tags {
@@ -1870,7 +1874,9 @@
       .detail-panel-header {
         font-size: 16px !important;
         margin-bottom: 15px !important;
-        padding-right: 35px;
+        padding-right: 40px !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
       }
 
       .detail-close {
@@ -1884,10 +1890,16 @@
       .detail-panel-content {
         font-size: 13px !important;
         line-height: 1.7 !important;
-        padding: 10px !important;
-        max-height: calc(80vh - 80px) !important;
+        padding: 10px 12px !important;
+        max-height: calc(85vh - 100px) !important;
         overflow-y: auto !important;
+        overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        white-space: normal !important;
+        box-sizing: border-box !important;
       }
 
       /* ── RESTART BUTTON ── */
