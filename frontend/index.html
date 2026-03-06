@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI HIVE MIND</title>
+  <title>AI HIVE MIND — ULTIMATE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -2344,7 +2344,7 @@
     <div class="intro-subtitle">Collective Intelligence System</div>
     
     <div class="intro-description">
-      Five specialized AI agents work together to solve your problem. Each brings a different perspective — analyzing, challenging, building, humanizing, and synthesizing ideas. As they collaborate, you can see their processing thoughts unfold, followed by a final synthesis: one clear, actionable answer.
+      Five specialized AI agents work together to solve your problem. Each agent brings a unique perspective — they analyze, challenge, build, humanize, and synthesize. The result: one clear, actionable answer that considers every angle.
     </div>
     
     <div class="intro-agents">
@@ -3806,9 +3806,11 @@ function shareLinkedIn() {
     // Show notification
     showSuccess('✓ Copied! Paste it in LinkedIn');
     
-    // Open LinkedIn feed after short delay
+    // Open LinkedIn's share/post creation page directly
     setTimeout(() => {
-      window.open('https://www.linkedin.com/feed/', '_blank', 'width=800,height=600');
+      const url = 'https://00ia.com';
+      const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+      window.open(linkedInUrl, '_blank', 'width=800,height=600');
     }, 500);
     
     closeShareModal();
@@ -3816,7 +3818,9 @@ function shareLinkedIn() {
     console.error('Copy failed:', err);
     // Fallback if copy fails
     alert('Please manually copy the text and paste in LinkedIn');
-    window.open('https://www.linkedin.com/feed/', '_blank', 'width=800,height=600');
+    const url = 'https://00ia.com';
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    window.open(linkedInUrl, '_blank', 'width=800,height=600');
     closeShareModal();
   });
 }
