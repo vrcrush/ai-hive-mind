@@ -737,6 +737,181 @@
       100% { transform: translateY(30px); }
     }
 
+    /* Share Button */
+    .share-container {
+      text-align: center;
+      margin: 25px auto 30px auto;
+      animation: fadeIn 1s ease 1.5s both;
+    }
+
+    .share-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      border-radius: 6px;
+      color: #00ff66;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .share-button:hover {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: rgba(0, 255, 102, 0.6);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .share-button:active {
+      transform: translateY(0);
+    }
+
+    .share-icon {
+      font-size: 16px;
+    }
+
+    /* Share Modal (Desktop) */
+    .share-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .share-modal.active {
+      display: flex;
+    }
+
+    .share-modal-content {
+      background: linear-gradient(to bottom, rgba(10, 5, 30, 0.98), rgba(5, 2, 15, 0.99));
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 50px rgba(0, 255, 102, 0.2);
+    }
+
+    .share-modal-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #00ff66;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .share-preview {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 25px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .share-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .share-option-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      border-radius: 6px;
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .share-option-btn:hover {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: rgba(0, 255, 102, 0.5);
+      transform: translateX(5px);
+    }
+
+    .share-option-icon {
+      font-size: 20px;
+    }
+
+    .share-modal-close {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .share-modal-close-btn {
+      padding: 10px 30px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .share-modal-close-btn:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Success notification */
+    .share-success {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 255, 102, 0.95);
+      color: #000;
+      padding: 20px 40px;
+      border-radius: 8px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      z-index: 400;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .share-success.show {
+      opacity: 1;
+      animation: successPulse 0.5s ease;
+    }
+
+    @keyframes successPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+
     /* Floating agent bubbles */
     .agent-bubbles {
       position: absolute;
@@ -1765,7 +1940,7 @@
 
       /* ── SYNTHESIS SCREEN ── */
       .synthesis-overlay {
-        padding: 10px 2px !important; /* Minimal padding for maximum content space */
+        padding: 10px 5px !important; /* Minimal padding for maximum content space */
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
@@ -1804,7 +1979,7 @@
       .synthesis-content {
         max-width: 98% !important; /* Much wider on mobile */
         width: 98% !important;
-        padding: 15px 2px !important; /* Minimal side padding for maximum text width */
+        padding: 15px 5px !important; /* Minimal side padding for maximum text width */
         font-size: 13px !important;
         line-height: 1.7 !important;
         max-height: 45vh !important; /* Reduced to make room for bubbles */
@@ -1823,6 +1998,27 @@
 
       .synthesis-content strong {
         font-size: 14px !important;
+      }
+
+      /* Share Button Mobile */
+      .share-container {
+        margin: 20px auto;
+        order: 2.5;
+      }
+
+      .share-button {
+        font-size: 12px !important;
+        padding: 10px 20px !important;
+        gap: 8px !important;
+      }
+
+      .share-icon {
+        font-size: 14px !important;
+      }
+
+      .share-modal-content {
+        width: 95% !important;
+        padding: 25px 20px !important;
       }
 
       /* ── AGENT BUBBLES (STACK 2x2 ABOVE TEXT) ── */
@@ -2417,6 +2613,14 @@
       <div class="synthesis-content" id="synthesis-text">
         <!-- Synthesis text populated by JS -->
       </div>
+
+      <!-- Share Button -->
+      <div class="share-container">
+        <button class="share-button" id="share-button" onclick="shareSynthesis()">
+          <span class="share-icon">📤</span>
+          <span class="share-text">Share Results</span>
+        </button>
+      </div>
     </div>
 
     <!-- Floating agent bubbles -->
@@ -2442,6 +2646,34 @@
   <button class="restart-button" id="restart-button" onclick="restartHive()">
     ↻ ASK NEW QUESTION
   </button>
+
+  <!-- Share Modal -->
+  <div class="share-modal" id="share-modal">
+    <div class="share-modal-content">
+      <div class="share-modal-title">SHARE YOUR RESULTS</div>
+      <div class="share-preview" id="share-preview"></div>
+      <div class="share-options">
+        <button class="share-option-btn" onclick="copyToClipboard()">
+          <span class="share-option-icon">📋</span>
+          <span>Copy to Clipboard</span>
+        </button>
+        <button class="share-option-btn" onclick="shareLinkedIn()">
+          <span class="share-option-icon">💼</span>
+          <span>Share on LinkedIn</span>
+        </button>
+        <button class="share-option-btn" onclick="shareTwitter()">
+          <span class="share-option-icon">🐦</span>
+          <span>Share on Twitter</span>
+        </button>
+      </div>
+      <div class="share-modal-close">
+        <button class="share-modal-close-btn" onclick="closeShareModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Success Notification -->
+  <div class="share-success" id="share-success">✓ Copied to Clipboard!</div>
 
   <!-- Footer -->
   <footer class="app-footer">
@@ -3497,6 +3729,110 @@ function restartHive() {
   // Reset running state
   isRunning = false;
 }
+
+
+function shareSynthesis() {
+  const question = document.getElementById('problem-input').value || 'a complex problem';
+  const synthesisEl = document.getElementById('synthesis-text');
+  const synthesisText = synthesisEl ? synthesisEl.textContent : '';
+  
+  // Format share text
+  currentShareText = formatShareText(question, synthesisText);
+  
+  // Try native share API first (mobile)
+  if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    navigator.share({
+      title: '🧠 AI Hive Mind Analysis',
+      text: currentShareText,
+      url: 'https://00ia.com'
+    }).catch(err => {
+      if (err.name !== 'AbortError') {
+        showShareModal();
+      }
+    });
+  } else {
+    // Desktop: Show modal
+    showShareModal();
+  }
+}
+
+function formatShareText(question, synthesis) {
+  // Truncate synthesis if too long
+  const maxLength = 400;
+  let truncatedSynthesis = synthesis;
+  
+  if (synthesis.length > maxLength) {
+    truncatedSynthesis = synthesis.substring(0, maxLength).trim() + '...';
+  }
+  
+  const shareText = `🧠 AI Hive Mind Analysis
+
+Question: "${question}"
+
+Result: ${truncatedSynthesis}
+
+→ Full analysis by 5 specialized AI agents
+→ Experience collective intelligence at 00ia.com`;
+  
+  return shareText;
+}
+
+function showShareModal() {
+  const modal = document.getElementById('share-modal');
+  const preview = document.getElementById('share-preview');
+  
+  preview.textContent = currentShareText;
+  modal.classList.add('active');
+}
+
+function closeShareModal() {
+  const modal = document.getElementById('share-modal');
+  modal.classList.remove('active');
+}
+
+function copyToClipboard() {
+  navigator.clipboard.writeText(currentShareText).then(() => {
+    showSuccess('✓ Copied to Clipboard!');
+    closeShareModal();
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    showSuccess('❌ Copy failed');
+  });
+}
+
+function shareLinkedIn() {
+  const url = 'https://00ia.com';
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+  window.open(linkedInUrl, '_blank', 'width=600,height=600');
+  closeShareModal();
+}
+
+function shareTwitter() {
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareText)}`;
+  window.open(twitterUrl, '_blank', 'width=600,height=400');
+  closeShareModal();
+}
+
+function showSuccess(message) {
+  const successEl = document.getElementById('share-success');
+  successEl.textContent = message;
+  successEl.classList.add('show');
+  
+  setTimeout(() => {
+    successEl.classList.remove('show');
+  }, 2000);
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('share-modal');
+  if (e.target === modal) {
+    closeShareModal();
+  }
+});
+
+// ── Share Functionality ────────────────────────────────────────
+let currentShareText = "";
 
 // ── Node State Management ──────────────────────────────────
 function setNodeState(agentId, state) {
