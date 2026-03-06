@@ -29,7 +29,7 @@ app.use(helmet({
 // Rate limiting - Prevent abuse
 const createLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: IS_PRODUCTION ? 10 : 100, // 10 requests per 15min in production, 100 in dev
+  max: IS_PRODUCTION ? 20 : 100, // 10 requests per 15min in production, 100 in dev
   message: { 
     error: 'Too many requests. Please try again in 15 minutes.',
     retryAfter: 900 
