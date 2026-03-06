@@ -323,7 +323,7 @@
 
     .input-label {
       font-family: 'Chakra Petch', sans-serif;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.25em;
       color: rgba(120, 80, 220, 0.9);
@@ -3758,7 +3758,7 @@ function shareSynthesis() {
 
 function formatShareText(question, synthesis) {
   // Truncate synthesis if too long
-  const maxLength = 400;
+  const maxLength = 800;
   let truncatedSynthesis = synthesis;
   
   if (synthesis.length > maxLength) {
