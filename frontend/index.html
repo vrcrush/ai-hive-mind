@@ -306,16 +306,19 @@
       top: 80px;
       left: 20px;
       width: 360px;
-      z-index: 20;
+      z-index: 150; /* Higher z-index to appear above everything */
     }
 
     .input-container {
-      background: rgba(5, 2, 15, 0.96);
-      border: 1px solid rgba(120, 80, 220, 0.4);
-      border-radius: 6px;
+      background: rgba(5, 2, 15, 0.90); /* Slightly more opaque */
+      border: 1px solid rgba(0, 255, 102, 0.3); /* Green border to match theme */
+      border-radius: 8px;
       padding: 16px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 4px 30px rgba(120, 80, 220, 0.3);
+      backdrop-filter: blur(20px); /* Stronger blur */
+      -webkit-backdrop-filter: blur(20px); /* Safari support */
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(0, 255, 102, 0.15); /* Green glow */
     }
 
     .input-label {
@@ -695,6 +698,7 @@
       letter-spacing: 0.15em;
       color: #ffffff;
       text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      white-space: nowrap; /* Keep "THE SYNTHESIZER" on one line */
     }
 
     .synthesis-content {
@@ -1646,6 +1650,7 @@
         left: 10px;
         width: calc(100% - 20px);
         max-width: calc(100% - 20px);
+        z-index: 150; /* Match desktop z-index */
       }
 
       #problem-input {
@@ -1749,10 +1754,13 @@
       /* ── SYNTHESIS SCREEN ── */
       .synthesis-overlay {
         padding: 15px;
+        display: flex;
+        flex-direction: column;
       }
 
       .synthesis-header {
         margin-bottom: 20px;
+        order: 1;
       }
 
       .synthesis-agent-displays {
@@ -1767,19 +1775,22 @@
       }
 
       .synthesis-title {
-        font-size: 22px !important;
+        font-size: 18px !important;
         letter-spacing: 0.15em;
         margin: 15px 0;
+        white-space: nowrap; /* Keep "THE SYNTHESIZER" on one line */
       }
 
       .synthesis-content {
-        max-width: 100% !important;
-        padding: 15px !important;
+        max-width: 92% !important; /* Wider content */
+        padding: 15px 20px !important;
         font-size: 13px !important;
         line-height: 1.7 !important;
-        max-height: 50vh !important;
+        max-height: 45vh !important; /* Reduced to make room for bubbles */
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch;
+        order: 3; /* Content appears after bubbles */
+        margin: 0 auto;
       }
 
       .synthesis-content h3 {
@@ -1792,14 +1803,17 @@
         font-size: 14px !important;
       }
 
-      /* ── AGENT BUBBLES (STACK 2x2) ── */
+      /* ── AGENT BUBBLES (STACK 2x2 ABOVE TEXT) ── */
       .agent-bubbles {
+        position: relative !important; /* Not absolute on mobile */
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
+        gap: 15px !important;
         justify-items: center !important;
-        margin: 20px auto !important;
+        margin: 15px auto 25px auto !important;
         max-width: 280px !important;
+        order: 2; /* Bubbles appear before content */
+        pointer-events: all !important;
       }
 
       .agent-bubble {
@@ -2000,7 +2014,8 @@
       }
 
       .synthesis-title {
-        font-size: 20px !important;
+        font-size: 16px !important; /* Even smaller for tiny phones */
+        white-space: nowrap;
       }
 
       .agent-bubbles {
@@ -3115,7 +3130,10 @@ function handleSSEEvent(data, evtSource) {
       break;
 
     case 'round_start':
-      document.getElementById('round-display').textContent = `ROUND ${data.round}`;
+      const roundDisplay = document.getElementById('round-display');
+      if (roundDisplay) {
+        roundDisplay.textContent = `ROUND ${data.round}`;
+      }
       break;
 
     case 'agent_start':
@@ -3156,7 +3174,10 @@ function handleSSEEvent(data, evtSource) {
     case 'hive_complete':
       resetRunState();
       evtSource.close();
-      document.getElementById('round-display').textContent = `COMPLETE`;
+      const completeDisplay = document.getElementById('round-display');
+      if (completeDisplay) {
+        completeDisplay.textContent = `COMPLETE`;
+      }
       setOnline(true);
       break;
 
