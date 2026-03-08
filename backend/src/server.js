@@ -18,6 +18,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
+// Trust proxy - Required for Render.com deployment
+// Render uses a proxy, so we need to trust X-Forwarded-* headers
+app.set('trust proxy', 1);
+
 // ── Security Middleware ────────────────────────────────────────────────────────
 
 // Helmet - Security headers
