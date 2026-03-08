@@ -3395,6 +3395,56 @@ function pulseAllConnections(agentId) {
   });
 }
 
+// ── Loading Messages System ────────────────────────────────────
+const loadingMessages = [
+  "🧠 Activating collective intelligence...",
+  "🔴 Analyst breaking down the problem...",
+  "🔵 Challenger questioning assumptions...",
+  "🟢 Builder crafting solutions...",
+  "🟡 Empath considering human impact...",
+  "⚪ Synthesizer combining perspectives...",
+  "⚡ Almost there... finalizing insights..."
+];
+
+let messageInterval = null;
+let currentMessageIndex = 0;
+
+function startLoadingMessages() {
+  const toast = document.getElementById('thinking-toast');
+  if (!toast) return;
+  
+  // Show first message immediately
+  currentMessageIndex = 0;
+  updateThinkingToast(loadingMessages[currentMessageIndex]);
+  
+  // Rotate messages every 3 seconds
+  messageInterval = setInterval(() => {
+    currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+    updateThinkingToast(loadingMessages[currentMessageIndex]);
+  }, 3000);
+}
+
+function stopLoadingMessages() {
+  if (messageInterval) {
+    clearInterval(messageInterval);
+    messageInterval = null;
+  }
+  currentMessageIndex = 0;
+}
+
+function updateThinkingToast(message) {
+  const toast = document.getElementById('thinking-toast');
+  if (!toast) return;
+  
+  // Smooth fade transition
+  toast.style.opacity = '0';
+  
+  setTimeout(() => {
+    toast.textContent = message;
+    toast.style.opacity = '1';
+  }, 150);
+}
+
 // ── UI Controls ────────────────────────────────────────────
 function adjustRounds(delta) {
   // Locked to 1 round - function disabled
@@ -3479,8 +3529,9 @@ async function activateHive() {
   btn.classList.add('running');
   btn.textContent = 'THINKING...';
 
-  // Show thinking toast
+  // Show thinking toast and start message rotation
   document.getElementById('thinking-toast').classList.add('show');
+  startLoadingMessages();
 
   resetHiveDisplay();
 
@@ -3778,7 +3829,8 @@ function showFinalPresentation() {
   // Show presentation with fade-in
   presentation.classList.add('active');
   
-  // Hide thinking toast
+  // Stop loading messages and hide thinking toast
+  stopLoadingMessages();
   document.getElementById('thinking-toast').classList.remove('show');
   
   // Hide input box and hologram on synthesis screen
