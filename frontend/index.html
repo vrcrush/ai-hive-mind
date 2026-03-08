@@ -769,6 +769,11 @@
       text-align: center;
       margin: 20px auto 25px auto;
       animation: fadeIn 1s ease 1.2s both;
+      position: relative;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .share-button {
@@ -801,6 +806,54 @@
     }
 
     .share-icon {
+      font-size: 16px;
+    }
+
+    /* Download Menu */
+    .download-menu {
+      position: absolute;
+      top: 60px;
+      right: 50%;
+      transform: translateX(50%);
+      background: rgba(10, 5, 30, 0.98);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      border-radius: 8px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 300;
+      min-width: 200px;
+      box-shadow: 0 10px 30px rgba(0, 255, 102, 0.2);
+    }
+
+    .download-menu.show {
+      display: flex;
+    }
+
+    .download-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(0, 255, 102, 0.05);
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      border-radius: 6px;
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .download-option:hover {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: rgba(0, 255, 102, 0.5);
+      transform: translateX(5px);
+    }
+
+    .download-option span {
       font-size: 16px;
     }
 
@@ -2043,6 +2096,8 @@
       /* Share Button Mobile */
       .share-container {
         margin: 15px auto 20px auto;
+        flex-direction: column;
+        gap: 10px;
       }
 
       .share-button {
@@ -2053,6 +2108,16 @@
 
       .share-icon {
         font-size: 14px !important;
+      }
+
+      .download-menu {
+        position: relative;
+        top: 0;
+        right: 0;
+        transform: none;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
       }
 
       .share-modal-content {
@@ -2658,12 +2723,30 @@
         <div class="synthesis-title">HIVE MIND SYNTHESIS</div>
         <div class="synthesis-label">THE SYNTHESIZER</div>
         
-        <!-- Share Button - Moved here for visibility -->
+        <!-- Share & Download Buttons - Moved here for visibility -->
         <div class="share-container">
           <button class="share-button" id="share-button" onclick="shareSynthesis()">
             <span class="share-icon">📤</span>
             <span class="share-text">Share Results</span>
           </button>
+          
+          <button class="share-button download-button" id="download-button" onclick="toggleDownloadMenu()">
+            <span class="share-icon">💾</span>
+            <span class="share-text">Download</span>
+          </button>
+          
+          <!-- Download Format Menu -->
+          <div class="download-menu" id="download-menu">
+            <button class="download-option" onclick="downloadResults('txt')">
+              <span>📄</span> Plain Text (.txt)
+            </button>
+            <button class="download-option" onclick="downloadResults('md')">
+              <span>📝</span> Markdown (.md)
+            </button>
+            <button class="download-option" onclick="downloadResults('pdf')">
+              <span>📕</span> PDF (.pdf)
+            </button>
+          </div>
         </div>
       </div>
       
@@ -3894,6 +3977,307 @@ function showSuccess(message) {
   setTimeout(() => {
     successEl.classList.remove('show');
   }, 3000);
+}
+
+// ── Download Functionality ────────────────────────────────────────
+function toggleDownloadMenu() {
+  const menu = document.getElementById('download-menu');
+  menu.classList.toggle('show');
+  
+  // Close menu when clicking outside
+  if (menu.classList.contains('show')) {
+    setTimeout(() => {
+      document.addEventListener('click', closeDownloadMenuOutside);
+    }, 100);
+  }
+}
+
+function closeDownloadMenuOutside(e) {
+  const menu = document.getElementById('download-menu');
+  const button = document.getElementById('download-button');
+  
+  if (!menu.contains(e.target) && !button.contains(e.target)) {
+    menu.classList.remove('show');
+    document.removeEventListener('click', closeDownloadMenuOutside);
+  }
+}
+
+function downloadResults(format) {
+  const question = document.getElementById('problem-input').value || 'Question';
+  const synthesisEl = document.getElementById('synthesis-text');
+  const synthesisText = synthesisEl ? synthesisEl.textContent : '';
+  
+  let content = '';
+  let filename = '';
+  let mimeType = '';
+  
+  // Get all agent responses
+  const agentResponses = {};
+  Object.keys(streamingEntries).forEach(agentId => {
+    if (agentId !== 'synthesizer') {
+      agentResponses[agentId] = streamingEntries[agentId]?.content || '';
+    }
+  });
+  
+  const timestamp = new Date().toLocaleString();
+  
+  switch(format) {
+    case 'txt':
+      content = formatAsText(question, agentResponses, synthesisText, timestamp);
+      filename = `hive-mind-${Date.now()}.txt`;
+      mimeType = 'text/plain';
+      break;
+      
+    case 'md':
+      content = formatAsMarkdown(question, agentResponses, synthesisText, timestamp);
+      filename = `hive-mind-${Date.now()}.md`;
+      mimeType = 'text/markdown';
+      break;
+      
+    case 'pdf':
+      downloadAsPDF(question, agentResponses, synthesisText, timestamp);
+      document.getElementById('download-menu').classList.remove('show');
+      return;
+  }
+  
+  // Create download
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  // Close menu and show success
+  document.getElementById('download-menu').classList.remove('show');
+  showSuccess(`✓ Downloaded as ${format.toUpperCase()}!`);
+}
+
+function formatAsText(question, agents, synthesis, timestamp) {
+  let text = '';
+  text += '═══════════════════════════════════════════════════════\n';
+  text += '         AI HIVE MIND COLLECTIVE ANALYSIS\n';
+  text += '═══════════════════════════════════════════════════════\n\n';
+  text += `Generated: ${timestamp}\n`;
+  text += `Source: 00ia.com\n\n`;
+  text += '───────────────────────────────────────────────────────\n';
+  text += 'QUESTION\n';
+  text += '───────────────────────────────────────────────────────\n\n';
+  text += `${question}\n\n`;
+  
+  // Agent responses
+  const agentNames = {
+    analyst: 'THE ANALYST - Structure',
+    challenger: 'THE CHALLENGER - Critique',
+    builder: 'THE BUILDER - Solutions',
+    empath: 'THE EMPATH - Impact'
+  };
+  
+  text += '═══════════════════════════════════════════════════════\n';
+  text += 'INDIVIDUAL AGENT PERSPECTIVES\n';
+  text += '═══════════════════════════════════════════════════════\n\n';
+  
+  Object.keys(agentNames).forEach(agentId => {
+    if (agents[agentId]) {
+      text += `───────────────────────────────────────────────────────\n`;
+      text += `${agentNames[agentId]}\n`;
+      text += `───────────────────────────────────────────────────────\n\n`;
+      text += `${agents[agentId]}\n\n`;
+    }
+  });
+  
+  // Synthesis
+  text += '═══════════════════════════════════════════════════════\n';
+  text += 'COLLECTIVE SYNTHESIS\n';
+  text += 'THE SYNTHESIZER - Converge\n';
+  text += '═══════════════════════════════════════════════════════\n\n';
+  text += `${synthesis}\n\n`;
+  text += '───────────────────────────────────────────────────────\n';
+  text += 'Analysis powered by AI Hive Mind\n';
+  text += 'Experience collective intelligence at 00ia.com\n';
+  text += '═══════════════════════════════════════════════════════\n';
+  
+  return text;
+}
+
+function formatAsMarkdown(question, agents, synthesis, timestamp) {
+  let md = '';
+  md += '# 🧠 AI Hive Mind Collective Analysis\n\n';
+  md += `**Generated:** ${timestamp}  \n`;
+  md += `**Source:** [00ia.com](https://00ia.com)\n\n`;
+  md += '---\n\n';
+  md += '## Question\n\n';
+  md += `> ${question}\n\n`;
+  md += '---\n\n';
+  
+  // Agent responses
+  const agentInfo = {
+    analyst: { name: 'The Analyst', role: 'Structure', icon: '🔴' },
+    challenger: { name: 'The Challenger', role: 'Critique', icon: '🔵' },
+    builder: { name: 'The Builder', role: 'Solutions', icon: '🟢' },
+    empath: { name: 'The Empath', role: 'Impact', icon: '🟡' }
+  };
+  
+  md += '## Individual Agent Perspectives\n\n';
+  
+  Object.keys(agentInfo).forEach(agentId => {
+    if (agents[agentId]) {
+      const info = agentInfo[agentId];
+      md += `### ${info.icon} ${info.name}\n`;
+      md += `**${info.role}**\n\n`;
+      md += `${agents[agentId]}\n\n`;
+      md += '---\n\n';
+    }
+  });
+  
+  // Synthesis
+  md += '## ⚪ Collective Synthesis\n';
+  md += '**The Synthesizer - Converge**\n\n';
+  md += `${synthesis}\n\n`;
+  md += '---\n\n';
+  md += '*Analysis powered by AI Hive Mind*  \n';
+  md += '*Experience collective intelligence at [00ia.com](https://00ia.com)*\n';
+  
+  return md;
+}
+
+function downloadAsPDF(question, agents, synthesis, timestamp) {
+  // Simple PDF using browser print
+  const printWindow = window.open('', '_blank');
+  const printContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>AI Hive Mind Analysis</title>
+      <style>
+        body {
+          font-family: 'Georgia', serif;
+          max-width: 800px;
+          margin: 40px auto;
+          padding: 20px;
+          line-height: 1.6;
+          color: #333;
+        }
+        h1 {
+          color: #00ff66;
+          border-bottom: 3px solid #00ff66;
+          padding-bottom: 10px;
+        }
+        h2 {
+          color: #00aa44;
+          margin-top: 30px;
+          border-bottom: 2px solid #eee;
+          padding-bottom: 5px;
+        }
+        h3 {
+          color: #555;
+          margin-top: 20px;
+        }
+        .meta {
+          color: #666;
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+        .question {
+          background: #f5f5f5;
+          padding: 15px;
+          border-left: 4px solid #00ff66;
+          margin: 20px 0;
+          font-style: italic;
+        }
+        .agent-response {
+          margin: 20px 0;
+          padding: 15px;
+          background: #fafafa;
+          border-radius: 5px;
+        }
+        .synthesis {
+          background: #e8f5e9;
+          padding: 20px;
+          border-radius: 5px;
+          border: 2px solid #00ff66;
+        }
+        .footer {
+          margin-top: 40px;
+          padding-top: 20px;
+          border-top: 2px solid #eee;
+          text-align: center;
+          color: #666;
+          font-size: 14px;
+        }
+        @media print {
+          body { margin: 0; padding: 20px; }
+          .no-print { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>🧠 AI Hive Mind Collective Analysis</h1>
+      <div class="meta">
+        <strong>Generated:</strong> ${timestamp}<br>
+        <strong>Source:</strong> 00ia.com
+      </div>
+      
+      <h2>Question</h2>
+      <div class="question">${question}</div>
+      
+      <h2>Individual Agent Perspectives</h2>
+      
+      ${agents.analyst ? `
+        <div class="agent-response">
+          <h3>🔴 The Analyst - Structure</h3>
+          <p>${agents.analyst.replace(/\n/g, '<br>')}</p>
+        </div>
+      ` : ''}
+      
+      ${agents.challenger ? `
+        <div class="agent-response">
+          <h3>🔵 The Challenger - Critique</h3>
+          <p>${agents.challenger.replace(/\n/g, '<br>')}</p>
+        </div>
+      ` : ''}
+      
+      ${agents.builder ? `
+        <div class="agent-response">
+          <h3>🟢 The Builder - Solutions</h3>
+          <p>${agents.builder.replace(/\n/g, '<br>')}</p>
+        </div>
+      ` : ''}
+      
+      ${agents.empath ? `
+        <div class="agent-response">
+          <h3>🟡 The Empath - Impact</h3>
+          <p>${agents.empath.replace(/\n/g, '<br>')}</p>
+        </div>
+      ` : ''}
+      
+      <h2>⚪ Collective Synthesis</h2>
+      <div class="synthesis">
+        <h3>The Synthesizer - Converge</h3>
+        <p>${synthesis.replace(/\n/g, '<br>')}</p>
+      </div>
+      
+      <div class="footer">
+        <p><em>Analysis powered by AI Hive Mind</em><br>
+        Experience collective intelligence at <strong>00ia.com</strong></p>
+      </div>
+      
+      <div class="no-print" style="margin-top: 30px; text-align: center;">
+        <button onclick="window.print()" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
+          Print / Save as PDF
+        </button>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  printWindow.document.write(printContent);
+  printWindow.document.close();
+  
+  showSuccess('✓ PDF ready! Click Print to save.');
 }
 
 // Close modal when clicking outside
