@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>AI HIVE MIND</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
@@ -1828,12 +1830,6 @@
       /* ── GLOBAL MOBILE FIXES ── */
       body {
         overflow-x: hidden;
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-      }
-
-      #app {
-        padding-bottom: env(safe-area-inset-bottom);
       }
 
       * {
@@ -1843,15 +1839,16 @@
 
       /* ── HEADER ── */
       header {
-        padding: 12px max(15px, env(safe-area-inset-left)) 12px max(15px, env(safe-area-inset-right));
-        padding-top: max(12px, env(safe-area-inset-top));
+        padding: 12px 15px;
+        padding-left: max(15px, env(safe-area-inset-left));
+        padding-right: max(15px, env(safe-area-inset-right));
         height: auto;
         min-height: 50px;
       }
 
       .logo {
-        font-size: 15px;
-        letter-spacing: 0.12em;
+        font-size: 16px;
+        letter-spacing: 0.15em;
       }
 
       .status-bar {
@@ -2202,15 +2199,19 @@
 
       /* ── INTRO SCREEN ── */
       .intro-content {
-        padding: 30px max(20px, env(safe-area-inset-left)) max(30px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-right));
-        padding-top: max(30px, env(safe-area-inset-top));
+        padding: 20px 20px 40px 20px;
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: max(40px, env(safe-area-inset-bottom));
         max-width: 100%;
         box-sizing: border-box;
       }
 
       .intro-title {
-        font-size: 30px;
-        letter-spacing: 0.12em;
+        font-size: 32px;
+        letter-spacing: 0.15em;
+        margin-bottom: 15px;
       }
 
       .intro-subtitle {
@@ -2251,14 +2252,12 @@
       .intro-button {
         font-size: 13px;
         padding: 12px 30px;
-        letter-spacing: 0.15em;
-        max-width: 85%;
+        letter-spacing: 0.2em;
       }
 
       .intro-credit {
         font-size: 12px;
         margin-top: 20px;
-        padding-bottom: env(safe-area-inset-bottom);
       }
 
       /* ── BACKEND LOADING OVERLAY ── */
@@ -2357,24 +2356,6 @@
 
       #problem-input {
         font-size: 12px;
-      }
-    }
-
-    /* ── LARGE PHONES (iPhone 14 Pro Max, etc - 390px - 430px) ── */
-    @media (min-width: 390px) and (max-width: 430px) {
-      .logo {
-        font-size: 15px !important;
-        letter-spacing: 0.1em !important;
-      }
-
-      .intro-title {
-        font-size: 28px !important;
-        letter-spacing: 0.1em !important;
-      }
-
-      .intro-button {
-        max-width: 80% !important;
-        letter-spacing: 0.12em !important;
       }
     }
 
