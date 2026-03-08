@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>AI HIVE MIND</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
@@ -1828,6 +1828,12 @@
       /* ── GLOBAL MOBILE FIXES ── */
       body {
         overflow-x: hidden;
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+
+      #app {
+        padding-bottom: env(safe-area-inset-bottom);
       }
 
       * {
@@ -1837,13 +1843,15 @@
 
       /* ── HEADER ── */
       header {
-        padding: 12px 15px;
-        height: 50px;
+        padding: 12px max(15px, env(safe-area-inset-left)) 12px max(15px, env(safe-area-inset-right));
+        padding-top: max(12px, env(safe-area-inset-top));
+        height: auto;
+        min-height: 50px;
       }
 
       .logo {
-        font-size: 16px;
-        letter-spacing: 0.15em;
+        font-size: 15px;
+        letter-spacing: 0.12em;
       }
 
       .status-bar {
@@ -2194,13 +2202,15 @@
 
       /* ── INTRO SCREEN ── */
       .intro-content {
-        padding: 30px 20px;
+        padding: 30px max(20px, env(safe-area-inset-left)) max(30px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-right));
+        padding-top: max(30px, env(safe-area-inset-top));
         max-width: 100%;
+        box-sizing: border-box;
       }
 
       .intro-title {
-        font-size: 32px;
-        letter-spacing: 0.15em;
+        font-size: 30px;
+        letter-spacing: 0.12em;
       }
 
       .intro-subtitle {
@@ -2241,12 +2251,14 @@
       .intro-button {
         font-size: 13px;
         padding: 12px 30px;
-        letter-spacing: 0.2em;
+        letter-spacing: 0.15em;
+        max-width: 85%;
       }
 
       .intro-credit {
         font-size: 12px;
         margin-top: 20px;
+        padding-bottom: env(safe-area-inset-bottom);
       }
 
       /* ── BACKEND LOADING OVERLAY ── */
@@ -2348,6 +2360,24 @@
       }
     }
 
+    /* ── LARGE PHONES (iPhone 14 Pro Max, etc - 390px - 430px) ── */
+    @media (min-width: 390px) and (max-width: 430px) {
+      .logo {
+        font-size: 15px !important;
+        letter-spacing: 0.1em !important;
+      }
+
+      .intro-title {
+        font-size: 28px !important;
+        letter-spacing: 0.1em !important;
+      }
+
+      .intro-button {
+        max-width: 80% !important;
+        letter-spacing: 0.12em !important;
+      }
+    }
+
     /* ── TABLETS (768px - 1024px) ── */
     @media (min-width: 769px) and (max-width: 1024px) {
       .synthesis-content {
@@ -2376,7 +2406,7 @@
     <div class="intro-subtitle">Collective Intelligence System</div>
     
     <div class="intro-description">
-      Five specialized AI agents work together to solve your problem. Each agent brings a unique perspective. The result: one clear, actionable answer that considers every angle.
+      Five specialized AI agents work together to solve your problem. Each agent brings a unique perspective — they analyze, challenge, build, humanize, and synthesize. The result: one clear, actionable answer that considers every angle.
     </div>
     
     <div class="intro-agents">
@@ -2716,7 +2746,7 @@
     <span>Powered by</span>
     <a href="https://www.00ia.com" target="_blank" rel="noopener noreferrer">00ia.com</a>
     <span class="footer-separator">|</span>
-    <span>AI Hive Mind © 2026</span>
+    <span>AI Hive Mind © 2025</span>
   </footer>
 </div>
 
@@ -3800,7 +3830,7 @@ function shareSynthesis() {
 
 function formatShareText(question, synthesis) {
   // Truncate synthesis if too long
-  const maxLength = 1000;
+  const maxLength = 600;
   let truncatedSynthesis = synthesis;
   
   if (synthesis.length > maxLength) {
