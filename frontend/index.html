@@ -3430,16 +3430,28 @@ function stopLoadingMessages() {
     messageInterval = null;
   }
   currentMessageIndex = 0;
+  
+  // Reset toast opacity
+  const toast = document.getElementById('thinking-toast');
+  if (toast) {
+    toast.style.opacity = '';
+  }
 }
 
 function updateThinkingToast(message) {
   const toast = document.getElementById('thinking-toast');
   if (!toast) return;
   
+  // Don't update if toast is hidden or being hidden
+  if (!toast.classList.contains('show')) return;
+  
   // Smooth fade transition
   toast.style.opacity = '0';
   
   setTimeout(() => {
+    // Check again in case it was hidden during transition
+    if (!toast.classList.contains('show')) return;
+    
     toast.textContent = message;
     toast.style.opacity = '1';
   }, 150);
@@ -3826,12 +3838,12 @@ function showFinalPresentation() {
     bubblesContainer.appendChild(bubble);
   });
   
-  // Show presentation with fade-in
-  presentation.classList.add('active');
-  
-  // Stop loading messages and hide thinking toast
+  // Stop loading messages and hide thinking toast FIRST
   stopLoadingMessages();
   document.getElementById('thinking-toast').classList.remove('show');
+  
+  // Show presentation with fade-in
+  presentation.classList.add('active');
   
   // Hide input box and hologram on synthesis screen
   const inputZone = document.querySelector('.input-zone');
